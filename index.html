@@ -1,1323 +1,543 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>PDF Tools</title>
-
-
-<!-- PDF.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<!-- PDF-LIB -->
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-
-    margin: 0;
-
-    font-family: Arial, sans-serif;
-
-    background: #f2f4f7;
-
-    color: #111;
-
-}
-
-
-header {
-
-    background: #2563eb;
-
-    color: white;
-
-    text-align: center;
-
-    padding: 25px 15px;
-
-}
-
-
-header h1 {
-
-    margin: 0;
-
-    font-size: 30px;
-
-}
-
-
-header p {
-
-    margin: 8px 0 0;
-
-}
-
-
-.container {
-
-    max-width: 750px;
-
-    margin: auto;
-
-    padding: 20px 15px;
-
-}
-
-
-.card {
-
-    background: white;
-
-    padding: 25px;
-
-    margin-bottom: 20px;
-
-    border-radius: 15px;
-
-    box-shadow:
-    0 4px 15px rgba(0,0,0,0.08);
-
-}
-
-
-.card h2 {
-
-    margin-top: 0;
-
-}
-
-
-input[type="file"] {
-
-    width: 100%;
-
-    margin: 15px 0;
-
-    padding: 10px;
-
-}
-
-
-button {
-
-    width: 100%;
-
-    padding: 14px;
-
-    margin-top: 10px;
-
-    border: none;
-
-    border-radius: 9px;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 17px;
-
-    cursor: pointer;
-
-}
-
-
-button:disabled {
-
-    background: #999;
-
-    cursor: not-allowed;
-
-}
-
-
-.file {
-
-    background: #f1f5f9;
-
-    padding: 10px;
-
-    margin: 6px 0;
-
-    border-radius: 7px;
-
-    word-break: break-word;
-
-}
-
-
-.status {
-
-    text-align: center;
-
-    font-weight: bold;
-
-    margin-top: 15px;
-
-}
-
-
-.note {
-
-    font-size: 13px;
-
-    color: #666;
-
-    line-height: 1.5;
-
-}
-
-
-footer {
-
-    text-align: center;
-
-    padding: 20px;
-
-    color: #777;
-
-    font-size: 13px;
-
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PDF Tools</title>
+
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- PDF-LIB -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6fa;
+      color: #222;
+    }
+
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 25px 15px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      margin: 15px 0;
+      padding: 10px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      padding: 14px;
+      border-radius: 9px;
+      background: #2563eb;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .file-list {
+      margin-top: 15px;
+    }
+
+    .file {
+      background: #f1f5f9;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 7px;
+      word-break: break-word;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 13px;
+    }
+  </style>
 </head>
-
-
 
 <body>
 
-
 <header>
-
-<h1>📄 PDF Tools</h1>
-
-<p>Merge • Invert • 3 Slides to A4</p>
-
+  <h1>📄 PDF Tools</h1>
+  <p>Merge & Invert your PDF files</p>
 </header>
-
 
 
 <div class="container">
 
+  <!-- PDF MERGER -->
+  <div class="card">
+
+    <h2>📚 Merge Multiple PDFs</h2>
+
+    <p>Select two or more PDF files.</p>
+
+    <input
+      type="file"
+      id="mergeFiles"
+      accept="application/pdf"
+      multiple
+    >
+
+    <div id="mergeFileList" class="file-list"></div>
+
+    <button id="mergeBtn" disabled>
+      Merge PDFs
+    </button>
+
+    <div id="mergeStatus" class="status"></div>
+
+    <p class="note">
+      The PDFs will be merged in the order shown above.
+    </p>
+
+  </div>
 
 
-<!-- =====================================================
-     MERGE PDF
-===================================================== -->
+  <!-- COLOR INVERTER -->
+  <div class="card">
 
-<div class="card">
+    <h2>🔄 Invert PDF Colors</h2>
 
-<h2>📚 Merge Multiple PDFs</h2>
+    <p>Select one PDF file to invert its colors.</p>
 
-<p>
-Select multiple PDF files and combine them into one PDF.
-</p>
+    <input
+      type="file"
+      id="invertFile"
+      accept="application/pdf"
+    >
 
+    <button id="invertBtn" disabled>
+      Invert Colors
+    </button>
 
-<input
-type="file"
-id="mergeFiles"
-accept="application/pdf"
-multiple
->
+    <div id="invertStatus" class="status"></div>
 
+    <p class="note">
+      Your PDF is processed directly in your browser.
+    </p>
 
-<div
-id="mergeFileList"
-></div>
-
-
-<button
-id="mergeBtn"
-disabled
->
-
-Merge PDFs
-
-</button>
-
-
-<div
-id="mergeStatus"
-class="status"
-></div>
-
-</div>
-
-
-
-<!-- =====================================================
-     COLOR INVERTER
-===================================================== -->
-
-<div class="card">
-
-<h2>🔄 Invert PDF Colors</h2>
-
-<p>
-Invert the colors of your PDF.
-</p>
-
-
-<input
-type="file"
-id="invertFile"
-accept="application/pdf"
->
-
-
-<button
-id="invertBtn"
-disabled
->
-
-Invert Colors
-
-</button>
-
-
-<div
-id="invertStatus"
-class="status"
-></div>
+  </div>
 
 </div>
-
-
-
-<!-- =====================================================
-     3 SLIDES → A4
-===================================================== -->
-
-<div class="card">
-
-<h2>📄 3 Slides → 1 A4 Page</h2>
-
-
-<p>
-
-Put 3 PDF slides/pages on a single A4 page.
-
-</p>
-
-
-<input
-type="file"
-id="a4File"
-accept="application/pdf"
->
-
-
-<button
-id="a4Btn"
-disabled
->
-
-Create A4 PDF
-
-</button>
-
-
-<div
-id="a4Status"
-class="status"
-></div>
-
-
-<p class="note">
-
-✓ A4 background will be white.<br>
-
-✓ Text/colors will be converted to black.<br>
-
-✓ Text will be enhanced to look darker and clearer.<br>
-
-✓ 3 slides will be placed on each A4 page.
-
-</p>
-
-</div>
-
-
-
-</div>
-
 
 
 <footer>
-
-PDF Tools © 2026
-
+  PDF Tools © 2026
 </footer>
-
 
 
 <script>
 
+/* =========================================
+   PDF MERGER
+========================================= */
 
-const {
-    jsPDF
-} = window.jspdf;
+const mergeFiles = document.getElementById("mergeFiles");
+const mergeFileList = document.getElementById("mergeFileList");
+const mergeBtn = document.getElementById("mergeBtn");
+const mergeStatus = document.getElementById("mergeStatus");
 
-
-
-/* =====================================================
-   MERGE PDF
-===================================================== */
-
-
-const mergeFiles =
-document.getElementById("mergeFiles");
-
-const mergeFileList =
-document.getElementById("mergeFileList");
-
-const mergeBtn =
-document.getElementById("mergeBtn");
-
-const mergeStatus =
-document.getElementById("mergeStatus");
+let selectedPDFs = [];
 
 
-let mergePDFs = [];
+mergeFiles.addEventListener("change", function () {
 
+  selectedPDFs = Array.from(this.files);
 
-mergeFiles.addEventListener(
-"change",
-function() {
+  mergeFileList.innerHTML = "";
 
+  selectedPDFs.forEach((file, index) => {
 
-    mergePDFs =
-    Array.from(this.files);
+    const div = document.createElement("div");
 
+    div.className = "file";
 
-    mergeFileList.innerHTML = "";
+    div.textContent =
+      (index + 1) + ". " + file.name;
 
+    mergeFileList.appendChild(div);
 
-    mergePDFs.forEach(
-    (file, index) => {
+  });
 
-
-        const div =
-        document.createElement("div");
-
-
-        div.className =
-        "file";
-
-
-        div.textContent =
-        (index + 1) +
-        ". " +
-        file.name;
-
-
-        mergeFileList.appendChild(
-        div
-        );
-
-    });
-
-
-    mergeBtn.disabled =
-    mergePDFs.length < 2;
+  mergeBtn.disabled = selectedPDFs.length < 2;
 
 });
 
 
+mergeBtn.addEventListener("click", async function () {
 
-mergeBtn.addEventListener(
-"click",
-async function() {
+  if (selectedPDFs.length < 2) {
+    alert("Please select at least 2 PDF files.");
+    return;
+  }
+
+  mergeBtn.disabled = true;
+
+  mergeStatus.textContent =
+    "⏳ Merging PDFs...";
+
+  try {
+
+    const mergedPdf =
+      await PDFLib.PDFDocument.create();
 
 
-    mergeBtn.disabled = true;
+    for (const file of selectedPDFs) {
+
+      const data =
+        await file.arrayBuffer();
+
+      const pdf =
+        await PDFLib.PDFDocument.load(data);
+
+      const pages =
+        await mergedPdf.copyPages(
+          pdf,
+          pdf.getPageIndices()
+        );
+
+      pages.forEach(page => {
+        mergedPdf.addPage(page);
+      });
+
+    }
+
+
+    const bytes =
+      await mergedPdf.save();
+
+
+    const blob =
+      new Blob(
+        [bytes],
+        { type: "application/pdf" }
+      );
+
+
+    downloadFile(
+      blob,
+      "merged.pdf"
+    );
 
 
     mergeStatus.textContent =
-    "⏳ Merging PDFs...";
+      "✅ PDFs merged successfully!";
 
 
-    try {
+  } catch (error) {
+
+    console.error(error);
+
+    mergeStatus.textContent =
+      "❌ Could not merge the PDFs.";
+
+  }
 
 
-        const mergedPdf =
-        await PDFLib.PDFDocument.create();
-
-
-        for(
-        const file of mergePDFs
-        ) {
-
-
-            const data =
-            await file.arrayBuffer();
-
-
-            const pdf =
-            await PDFLib.PDFDocument.load(
-            data
-            );
-
-
-            const pages =
-            await mergedPdf.copyPages(
-                pdf,
-                pdf.getPageIndices()
-            );
-
-
-            pages.forEach(
-            page => {
-
-                mergedPdf.addPage(
-                page
-                );
-
-            });
-
-        }
-
-
-        const bytes =
-        await mergedPdf.save();
-
-
-        const blob =
-        new Blob(
-        [bytes],
-        {
-            type:
-            "application/pdf"
-        }
-        );
-
-
-        downloadFile(
-            blob,
-            "merged.pdf"
-        );
-
-
-        mergeStatus.textContent =
-        "✅ PDF merged successfully!";
-
-
-    }
-
-    catch(error) {
-
-
-        console.error(error);
-
-
-        mergeStatus.textContent =
-        "❌ Could not merge PDF.";
-
-    }
-
-
-    mergeBtn.disabled = false;
+  mergeBtn.disabled = false;
 
 });
 
 
-
-/* =====================================================
-   COLOR INVERTER
-===================================================== */
-
+/* =========================================
+   PDF COLOR INVERTER
+========================================= */
 
 const invertFile =
-document.getElementById("invertFile");
+  document.getElementById("invertFile");
 
 const invertBtn =
-document.getElementById("invertBtn");
+  document.getElementById("invertBtn");
 
 const invertStatus =
-document.getElementById("invertStatus");
+  document.getElementById("invertStatus");
 
 
-let invertPDF = null;
+let selectedInvertFile = null;
 
 
-invertFile.addEventListener(
-"change",
-function() {
+invertFile.addEventListener("change", function () {
 
-
-    invertPDF =
+  selectedInvertFile =
     this.files[0];
 
-
-    invertBtn.disabled =
-    !invertPDF;
+  invertBtn.disabled =
+    !selectedInvertFile;
 
 });
 
 
+invertBtn.addEventListener("click", async function () {
 
-invertBtn.addEventListener(
-"click",
-async function() {
-
-
-    if(!invertPDF)
+  if (!selectedInvertFile) {
     return;
+  }
 
+  invertBtn.disabled = true;
 
-    invertBtn.disabled = true;
+  invertStatus.textContent =
+    "⏳ Inverting PDF colors...";
 
 
-    invertStatus.textContent =
-    "⏳ Inverting colors...";
+  try {
 
+    const arrayBuffer =
+      await selectedInvertFile.arrayBuffer();
 
-    try {
 
+    const pdf =
+      await pdfjsLib.getDocument({
+        data: arrayBuffer
+      }).promise;
 
-        const data =
-        await invertPDF.arrayBuffer();
 
+    const {
+      jsPDF
+    } = window.jspdf;
 
-        const pdf =
-        await pdfjsLib.getDocument({
-            data:data
-        }).promise;
 
+    let outputPDF = null;
 
-        let output = null;
 
+    for (let pageNumber = 1;
+         pageNumber <= pdf.numPages;
+         pageNumber++) {
 
-        for(
-        let i=1;
-        i<=pdf.numPages;
-        i++
-        ) {
 
+      const page =
+        await pdf.getPage(pageNumber);
 
-            const page =
-            await pdf.getPage(i);
 
-
-            const viewport =
-            page.getViewport({
-                scale:1.5
-            });
-
-
-            const canvas =
-            document.createElement(
-            "canvas"
-            );
-
-
-            const ctx =
-            canvas.getContext("2d");
-
-
-            canvas.width =
-            viewport.width;
-
-
-            canvas.height =
-            viewport.height;
-
-
-            await page.render({
-
-                canvasContext:
-                ctx,
-
-                viewport:
-                viewport
-
-            }).promise;
-
-
-            const img =
-            ctx.getImageData(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
-
-
-            const pixels =
-            img.data;
-
-
-            for(
-            let p=0;
-            p<pixels.length;
-            p+=4
-            ) {
-
-
-                pixels[p] =
-                255-pixels[p];
-
-
-                pixels[p+1] =
-                255-pixels[p+1];
-
-
-                pixels[p+2] =
-                255-pixels[p+2];
-
-            }
-
-
-            ctx.putImageData(
-            img,
-            0,
-            0
-            );
-
-
-            const image =
-            canvas.toDataURL(
-            "image/jpeg",
-            0.95
-            );
-
-
-            const orientation =
-            viewport.width >
-            viewport.height
-            ?
-            "landscape"
-            :
-            "portrait";
-
-
-            if(!output) {
-
-
-                output =
-                new jsPDF({
-
-                    orientation:
-                    orientation,
-
-                    unit:
-                    "pt",
-
-                    format:
-                    [
-                        viewport.width,
-                        viewport.height
-                    ]
-
-                });
-
-
-            }
-
-            else {
-
-
-                output.addPage(
-
-                    [
-                        viewport.width,
-                        viewport.height
-                    ],
-
-                    orientation
-
-                );
-
-            }
-
-
-            output.addImage(
-
-                image,
-
-                "JPEG",
-
-                0,
-
-                0,
-
-                viewport.width,
-
-                viewport.height
-
-            );
-
-        }
-
-
-        output.save(
-        "inverted.pdf"
-        );
-
-
-        invertStatus.textContent =
-        "✅ Colors inverted!";
-
-
-    }
-
-    catch(error) {
-
-
-        console.error(error);
-
-
-        invertStatus.textContent =
-        "❌ Error processing PDF.";
-
-    }
-
-
-    invertBtn.disabled = false;
-
-});
-
-
-
-/* =====================================================
-   3 SLIDES → A4
-===================================================== */
-
-
-const a4File =
-document.getElementById("a4File");
-
-const a4Btn =
-document.getElementById("a4Btn");
-
-const a4Status =
-document.getElementById("a4Status");
-
-
-let a4PDF = null;
-
-
-a4File.addEventListener(
-"change",
-function() {
-
-
-    a4PDF =
-    this.files[0];
-
-
-    a4Btn.disabled =
-    !a4PDF;
-
-});
-
-
-
-a4Btn.addEventListener(
-"click",
-async function() {
-
-
-    if(!a4PDF)
-    return;
-
-
-    a4Btn.disabled = true;
-
-
-    a4Status.textContent =
-    "⏳ Creating A4 PDF...";
-
-
-    try {
-
-
-        const data =
-        await a4PDF.arrayBuffer();
-
-
-        const pdf =
-        await pdfjsLib.getDocument({
-            data:data
-        }).promise;
-
-
-        /*
-        A4 dimensions
-        */
-
-        const A4_WIDTH =
-        595.28;
-
-        const A4_HEIGHT =
-        841.89;
-
-
-        const sectionHeight =
-        A4_HEIGHT / 3;
-
-
-        const output =
-        new jsPDF({
-
-            orientation:
-            "portrait",
-
-            unit:
-            "pt",
-
-            format:
-            "a4"
-
+      const viewport =
+        page.getViewport({
+          scale: 1.5
         });
 
 
-        let firstPage = true;
+      const canvas =
+        document.createElement("canvas");
 
 
+      const context =
+        canvas.getContext("2d");
 
-        /*
-        Process 3 slides at a time
-        */
 
-        for(
-        let start=1;
-        start<=pdf.numPages;
-        start+=3
-        ) {
+      canvas.width =
+        viewport.width;
 
+      canvas.height =
+        viewport.height;
 
-            if(!firstPage) {
 
+      await page.render({
+        canvasContext: context,
+        viewport: viewport
+      }).promise;
 
-                output.addPage(
-                "a4",
-                "portrait"
-                );
 
+      /* Invert colors */
 
-            }
-
-
-            firstPage = false;
-
-
-
-            /*
-            Process each slide
-            */
-
-            for(
-            let position=0;
-            position<3;
-            position++
-            ) {
-
-
-                const pageNumber =
-                start + position;
-
-
-                if(
-                pageNumber >
-                pdf.numPages
-                ) {
-
-                    break;
-
-                }
-
-
-                const page =
-                await pdf.getPage(
-                pageNumber
-                );
-
-
-                /*
-                High resolution render
-                */
-
-                const viewport =
-                page.getViewport({
-                    scale:2.2
-                });
-
-
-                const canvas =
-                document.createElement(
-                "canvas"
-                );
-
-
-                const ctx =
-                canvas.getContext(
-                "2d",
-                {
-                    willReadFrequently:true
-                }
-                );
-
-
-                canvas.width =
-                viewport.width;
-
-
-                canvas.height =
-                viewport.height;
-
-
-
-                /*
-                WHITE BACKGROUND
-                */
-
-                ctx.fillStyle =
-                "#FFFFFF";
-
-
-                ctx.fillRect(
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
-
-
-
-                /*
-                Render PDF
-                */
-
-                await page.render({
-
-                    canvasContext:
-                    ctx,
-
-                    viewport:
-                    viewport,
-
-                    background:
-                    "white"
-
-                }).promise;
-
-
-
-                /*
-                =================================================
-                MAKE TEXT / CONTENT BLACK
-                AND BACKGROUND WHITE
-                =================================================
-                */
-
-
-                const imageData =
-                ctx.getImageData(
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
-
-
-                const pixels =
-                imageData.data;
-
-
-                for(
-                let p=0;
-                p<pixels.length;
-                p+=4
-                ) {
-
-
-                    const r =
-                    pixels[p];
-
-                    const g =
-                    pixels[p+1];
-
-                    const b =
-                    pixels[p+2];
-
-
-                    /*
-                    Calculate brightness
-                    */
-
-                    const brightness =
-                    (
-                        r * 0.299 +
-                        g * 0.587 +
-                        b * 0.114
-                    );
-
-
-
-                    /*
-                    VERY LIGHT COLORS
-                    → WHITE
-
-                    DARK / COLORED TEXT
-                    → BLACK
-                    */
-
-                    if(
-                    brightness > 210
-                    ) {
-
-
-                        pixels[p] =
-                        255;
-
-                        pixels[p+1] =
-                        255;
-
-                        pixels[p+2] =
-                        255;
-
-
-                    }
-
-                    else {
-
-
-                        pixels[p] =
-                        0;
-
-                        pixels[p+1] =
-                        0;
-
-                        pixels[p+2] =
-                        0;
-
-                    }
-
-                }
-
-
-                ctx.putImageData(
-                    imageData,
-                    0,
-                    0
-                );
-
-
-
-                /*
-                Convert to PNG
-
-                PNG gives better text
-                quality than JPEG.
-                */
-
-                const image =
-                canvas.toDataURL(
-                "image/png"
-                );
-
-
-
-                /*
-                Keep original aspect ratio
-                */
-
-                const ratio =
-                canvas.width /
-                canvas.height;
-
-
-                const sectionRatio =
-                A4_WIDTH /
-                sectionHeight;
-
-
-                let width;
-                let height;
-
-
-                if(
-                ratio > sectionRatio
-                ) {
-
-
-                    width =
-                    A4_WIDTH;
-
-
-                    height =
-                    A4_WIDTH /
-                    ratio;
-
-
-                }
-
-                else {
-
-
-                    height =
-                    sectionHeight;
-
-
-                    width =
-                    sectionHeight *
-                    ratio;
-
-                }
-
-
-
-                /*
-                Center slide
-                */
-
-                const x =
-                (A4_WIDTH-width)/2;
-
-
-                const y =
-                position *
-                sectionHeight +
-                (sectionHeight-height)/2;
-
-
-
-                /*
-                Add slide
-                */
-
-                output.addImage(
-
-                    image,
-
-                    "PNG",
-
-                    x,
-
-                    y,
-
-                    width,
-
-                    height
-
-                );
-
-            }
-
-        }
-
-
-
-        /*
-        DOWNLOAD
-        */
-
-        output.save(
-        "3-slides-per-A4-black-white.pdf"
+      const imageData =
+        context.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height
         );
 
 
-        a4Status.textContent =
-        "✅ A4 PDF created successfully!";
+      const pixels =
+        imageData.data;
 
+
+      for (let i = 0;
+           i < pixels.length;
+           i += 4) {
+
+        pixels[i] =
+          255 - pixels[i];
+
+        pixels[i + 1] =
+          255 - pixels[i + 1];
+
+        pixels[i + 2] =
+          255 - pixels[i + 2];
+
+      }
+
+
+      context.putImageData(
+        imageData,
+        0,
+        0
+      );
+
+
+      const imgData =
+        canvas.toDataURL("image/jpeg", 0.95);
+
+
+      const orientation =
+        viewport.width >
+        viewport.height
+          ? "landscape"
+          : "portrait";
+
+
+      if (!outputPDF) {
+
+        outputPDF =
+          new jsPDF({
+            orientation: orientation,
+            unit: "pt",
+            format: [
+              viewport.width,
+              viewport.height
+            ]
+          });
+
+      } else {
+
+        outputPDF.addPage(
+          [viewport.width, viewport.height],
+          orientation
+        );
+
+      }
+
+
+      outputPDF.addImage(
+        imgData,
+        "JPEG",
+        0,
+        0,
+        viewport.width,
+        viewport.height
+      );
 
     }
 
-    catch(error) {
+
+    outputPDF.save(
+      "inverted.pdf"
+    );
 
 
-        console.error(error);
+    invertStatus.textContent =
+      "✅ PDF color inverted successfully!";
 
 
-        a4Status.textContent =
-        "❌ Could not create A4 PDF.";
+  } catch (error) {
 
-    }
+    console.error(error);
+
+    invertStatus.textContent =
+      "❌ Could not invert the PDF.";
+
+  }
 
 
-    a4Btn.disabled = false;
+  invertBtn.disabled = false;
 
 });
 
 
-
-/* =====================================================
+/* =========================================
    DOWNLOAD FUNCTION
-===================================================== */
+========================================= */
 
+function downloadFile(blob, filename) {
 
-function downloadFile(
-blob,
-filename
-) {
-
-
-    const url =
+  const url =
     URL.createObjectURL(blob);
 
+  const link =
+    document.createElement("a");
 
-    const link =
-    document.createElement(
-    "a"
-    );
+  link.href = url;
 
+  link.download = filename;
 
-    link.href =
-    url;
+  document.body.appendChild(link);
 
+  link.click();
 
-    link.download =
-    filename;
+  document.body.removeChild(link);
 
-
-    document.body.appendChild(
-    link
-    );
-
-
-    link.click();
-
-
-    document.body.removeChild(
-    link
-    );
-
-
-    setTimeout(
-    () => {
-
-        URL.revokeObjectURL(
-        url
-        );
-
-    },
-    1000
-    );
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1000);
 
 }
 
 </script>
 
-
 </body>
-
 </html>
