@@ -4,306 +4,397 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>PDF Color Inverter</title>
+  <title>PDF Tools</title>
 
   <!-- PDF.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs"
-          type="module"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+  <!-- PDF-LIB -->
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
     }
 
     body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #111827, #1e3a8a);
-      color: white;
-      padding: 25px 15px;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6fa;
+      color: #222;
     }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 25px 15px;
       text-align: center;
     }
 
-    h1 {
-      font-size: 34px;
-      margin-top: 20px;
-      margin-bottom: 10px;
+    header h1 {
+      margin: 0;
+      font-size: 30px;
     }
 
-    .subtitle {
-      color: #d1d5db;
-      margin-bottom: 30px;
+    header p {
+      margin: 8px 0 0;
     }
 
-    .upload-box {
-      background: rgba(255,255,255,0.1);
-      border: 2px dashed #60a5fa;
-      border-radius: 18px;
-      padding: 45px 20px;
-      cursor: pointer;
-      transition: 0.3s;
+    .container {
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 15px;
     }
 
-    .upload-box:hover {
-      background: rgba(255,255,255,0.16);
+    .card {
+      background: white;
+      padding: 25px;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
-    .upload-icon {
-      font-size: 55px;
-      margin-bottom: 15px;
-    }
-
-    .upload-box h2 {
-      margin-bottom: 10px;
+    h2 {
+      margin-top: 0;
     }
 
     input[type="file"] {
-      display: none;
+      width: 100%;
+      margin: 15px 0;
+      padding: 10px;
     }
 
-    .button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 13px 25px;
+    button {
+      width: 100%;
       border: none;
-      border-radius: 10px;
+      padding: 14px;
+      border-radius: 9px;
       background: #2563eb;
       color: white;
-      font-size: 16px;
+      font-size: 17px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
-    .button:hover {
+    button:hover {
       background: #1d4ed8;
     }
 
-    #status {
-      margin: 20px 0;
-      font-size: 16px;
-      color: #bfdbfe;
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
     }
 
-    #preview {
-      margin-top: 25px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+    .file-list {
+      margin-top: 15px;
     }
 
-    .page {
-      background: white;
+    .file {
+      background: #f1f5f9;
       padding: 10px;
-      border-radius: 10px;
+      margin: 6px 0;
+      border-radius: 7px;
+      word-break: break-word;
     }
 
-    .page canvas {
-      width: 100%;
-      height: auto;
-      display: block;
-      filter: invert(1);
+    .status {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
     }
 
-    #downloadBtn {
-      display: none;
-      background: #16a34a;
-      margin-bottom: 30px;
+    .note {
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
     }
 
-    #downloadBtn:hover {
-      background: #15803d;
-    }
-
-    .footer {
-      margin-top: 40px;
-      color: #9ca3af;
-      font-size: 14px;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 27px;
-      }
-
-      .upload-box {
-        padding: 35px 15px;
-      }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
 
+<header>
+  <h1>📄 PDF Tools</h1>
+  <p>Merge & Invert your PDF files</p>
+</header>
+
+
 <div class="container">
 
-  <h1>📄 PDF Color Inverter</h1>
+  <!-- PDF MERGER -->
+  <div class="card">
 
-  <p class="subtitle">
-    Upload your PDF and convert its colors to negative/inverted colors.
-  </p>
+    <h2>📚 Merge Multiple PDFs</h2>
 
-  <label class="upload-box" for="pdfInput">
-
-    <div class="upload-icon">📤</div>
-
-    <h2>Upload PDF</h2>
-
-    <p>Tap here to select your PDF file</p>
+    <p>Select two or more PDF files.</p>
 
     <input
       type="file"
-      id="pdfInput"
+      id="mergeFiles"
+      accept="application/pdf"
+      multiple
+    >
+
+    <div id="mergeFileList" class="file-list"></div>
+
+    <button id="mergeBtn" disabled>
+      Merge PDFs
+    </button>
+
+    <div id="mergeStatus" class="status"></div>
+
+    <p class="note">
+      The PDFs will be merged in the order shown above.
+    </p>
+
+  </div>
+
+
+  <!-- COLOR INVERTER -->
+  <div class="card">
+
+    <h2>🔄 Invert PDF Colors</h2>
+
+    <p>Select one PDF file to invert its colors.</p>
+
+    <input
+      type="file"
+      id="invertFile"
       accept="application/pdf"
     >
 
-  </label>
+    <button id="invertBtn" disabled>
+      Invert Colors
+    </button>
 
-  <div id="status"></div>
+    <div id="invertStatus" class="status"></div>
 
-  <button id="downloadBtn" class="button">
-    📥 Download Inverted PDF
-  </button>
+    <p class="note">
+      Your PDF is processed directly in your browser.
+    </p>
 
-  <div id="preview"></div>
-
-  <div class="footer">
-    Your PDF is processed directly in your browser.
   </div>
 
 </div>
 
 
-<script type="module">
-
-  import * as pdfjsLib from
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
-
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+<footer>
+  PDF Tools © 2026
+</footer>
 
 
-  const fileInput = document.getElementById("pdfInput");
-  const preview = document.getElementById("preview");
-  const status = document.getElementById("status");
-  const downloadBtn = document.getElementById("downloadBtn");
+<script>
 
-  let pdfDocument = null;
+/* =========================================
+   PDF MERGER
+========================================= */
+
+const mergeFiles = document.getElementById("mergeFiles");
+const mergeFileList = document.getElementById("mergeFileList");
+const mergeBtn = document.getElementById("mergeBtn");
+const mergeStatus = document.getElementById("mergeStatus");
+
+let selectedPDFs = [];
 
 
-  fileInput.addEventListener("change", async function () {
+mergeFiles.addEventListener("change", function () {
 
-    const file = this.files[0];
+  selectedPDFs = Array.from(this.files);
 
-    if (!file) return;
+  mergeFileList.innerHTML = "";
 
-    if (file.type !== "application/pdf") {
-      status.textContent = "❌ Please select a PDF file.";
-      return;
-    }
+  selectedPDFs.forEach((file, index) => {
 
-    preview.innerHTML = "";
-    downloadBtn.style.display = "none";
+    const div = document.createElement("div");
 
-    status.textContent = "⏳ Processing PDF...";
+    div.className = "file";
 
-    try {
+    div.textContent =
+      (index + 1) + ". " + file.name;
 
-      const arrayBuffer = await file.arrayBuffer();
-
-      pdfDocument = await pdfjsLib.getDocument({
-        data: arrayBuffer
-      }).promise;
-
-      status.textContent =
-        `📄 ${pdfDocument.numPages} page(s) found.`;
-
-      for (let pageNumber = 1;
-           pageNumber <= pdfDocument.numPages;
-           pageNumber++) {
-
-        const page = await pdfDocument.getPage(pageNumber);
-
-        const viewport = page.getViewport({
-          scale: 1.5
-        });
-
-        const canvas = document.createElement("canvas");
-
-        const context = canvas.getContext("2d");
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        await page.render({
-          canvasContext: context,
-          viewport: viewport
-        }).promise;
-
-        const pageDiv = document.createElement("div");
-
-        pageDiv.className = "page";
-
-        pageDiv.appendChild(canvas);
-
-        preview.appendChild(pageDiv);
-
-      }
-
-      status.textContent =
-        "✅ PDF processed successfully!";
-
-      downloadBtn.style.display = "inline-block";
-
-    } catch (error) {
-
-      console.error(error);
-
-      status.textContent =
-        "❌ Something went wrong while processing the PDF.";
-
-    }
+    mergeFileList.appendChild(div);
 
   });
 
+  mergeBtn.disabled = selectedPDFs.length < 2;
 
-  downloadBtn.addEventListener("click", async function () {
+});
 
-    if (!pdfDocument) return;
 
-    status.textContent =
-      "⏳ Creating inverted PDF...";
+mergeBtn.addEventListener("click", async function () {
 
-    const { jsPDF } = window.jspdf;
+  if (selectedPDFs.length < 2) {
+    alert("Please select at least 2 PDF files.");
+    return;
+  }
 
-    let pdfOutput = null;
+  mergeBtn.disabled = true;
+
+  mergeStatus.textContent =
+    "⏳ Merging PDFs...";
+
+  try {
+
+    const mergedPdf =
+      await PDFLib.PDFDocument.create();
+
+
+    for (const file of selectedPDFs) {
+
+      const data =
+        await file.arrayBuffer();
+
+      const pdf =
+        await PDFLib.PDFDocument.load(data);
+
+      const pages =
+        await mergedPdf.copyPages(
+          pdf,
+          pdf.getPageIndices()
+        );
+
+      pages.forEach(page => {
+        mergedPdf.addPage(page);
+      });
+
+    }
+
+
+    const bytes =
+      await mergedPdf.save();
+
+
+    const blob =
+      new Blob(
+        [bytes],
+        { type: "application/pdf" }
+      );
+
+
+    downloadFile(
+      blob,
+      "merged.pdf"
+    );
+
+
+    mergeStatus.textContent =
+      "✅ PDFs merged successfully!";
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    mergeStatus.textContent =
+      "❌ Could not merge the PDFs.";
+
+  }
+
+
+  mergeBtn.disabled = false;
+
+});
+
+
+/* =========================================
+   PDF COLOR INVERTER
+========================================= */
+
+const invertFile =
+  document.getElementById("invertFile");
+
+const invertBtn =
+  document.getElementById("invertBtn");
+
+const invertStatus =
+  document.getElementById("invertStatus");
+
+
+let selectedInvertFile = null;
+
+
+invertFile.addEventListener("change", function () {
+
+  selectedInvertFile =
+    this.files[0];
+
+  invertBtn.disabled =
+    !selectedInvertFile;
+
+});
+
+
+invertBtn.addEventListener("click", async function () {
+
+  if (!selectedInvertFile) {
+    return;
+  }
+
+  invertBtn.disabled = true;
+
+  invertStatus.textContent =
+    "⏳ Inverting PDF colors...";
+
+
+  try {
+
+    const arrayBuffer =
+      await selectedInvertFile.arrayBuffer();
+
+
+    const pdf =
+      await pdfjsLib.getDocument({
+        data: arrayBuffer
+      }).promise;
+
+
+    const {
+      jsPDF
+    } = window.jspdf;
+
+
+    let outputPDF = null;
+
 
     for (let pageNumber = 1;
-         pageNumber <= pdfDocument.numPages;
+         pageNumber <= pdf.numPages;
          pageNumber++) {
 
+
       const page =
-        await pdfDocument.getPage(pageNumber);
+        await pdf.getPage(pageNumber);
+
 
       const viewport =
-        page.getViewport({ scale: 1.5 });
+        page.getViewport({
+          scale: 1.5
+        });
+
 
       const canvas =
         document.createElement("canvas");
 
+
       const context =
         canvas.getContext("2d");
 
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+
+      canvas.width =
+        viewport.width;
+
+      canvas.height =
+        viewport.height;
+
 
       await page.render({
         canvasContext: context,
@@ -321,15 +412,26 @@
           canvas.height
         );
 
-      const data = imageData.data;
 
-      for (let i = 0; i < data.length; i += 4) {
+      const pixels =
+        imageData.data;
 
-        data[i]     = 255 - data[i];
-        data[i + 1] = 255 - data[i + 1];
-        data[i + 2] = 255 - data[i + 2];
+
+      for (let i = 0;
+           i < pixels.length;
+           i += 4) {
+
+        pixels[i] =
+          255 - pixels[i];
+
+        pixels[i + 1] =
+          255 - pixels[i + 1];
+
+        pixels[i + 2] =
+          255 - pixels[i + 2];
 
       }
+
 
       context.putImageData(
         imageData,
@@ -339,60 +441,101 @@
 
 
       const imgData =
-        canvas.toDataURL("image/jpeg", 0.92);
+        canvas.toDataURL("image/jpeg", 0.95);
 
 
       const orientation =
-        viewport.width > viewport.height
+        viewport.width >
+        viewport.height
           ? "landscape"
           : "portrait";
 
 
-      const pageWidth =
-        viewport.width / 1.5;
+      if (!outputPDF) {
 
-      const pageHeight =
-        viewport.height / 1.5;
-
-
-      if (pageNumber === 1) {
-
-        pdfOutput = new jsPDF({
-          orientation: orientation,
-          unit: "pt",
-          format: [pageWidth, pageHeight]
-        });
+        outputPDF =
+          new jsPDF({
+            orientation: orientation,
+            unit: "pt",
+            format: [
+              viewport.width,
+              viewport.height
+            ]
+          });
 
       } else {
 
-        pdfOutput.addPage(
-          [pageWidth, pageHeight],
+        outputPDF.addPage(
+          [viewport.width, viewport.height],
           orientation
         );
 
       }
 
 
-      pdfOutput.addImage(
+      outputPDF.addImage(
         imgData,
         "JPEG",
         0,
         0,
-        pageWidth,
-        pageHeight
+        viewport.width,
+        viewport.height
       );
 
     }
 
 
-    pdfOutput.save(
-      "inverted-pdf.pdf"
+    outputPDF.save(
+      "inverted.pdf"
     );
 
-    status.textContent =
-      "✅ Inverted PDF downloaded!";
 
-  });
+    invertStatus.textContent =
+      "✅ PDF color inverted successfully!";
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    invertStatus.textContent =
+      "❌ Could not invert the PDF.";
+
+  }
+
+
+  invertBtn.disabled = false;
+
+});
+
+
+/* =========================================
+   DOWNLOAD FUNCTION
+========================================= */
+
+function downloadFile(blob, filename) {
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const link =
+    document.createElement("a");
+
+  link.href = url;
+
+  link.download = filename;
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1000);
+
+}
 
 </script>
 
